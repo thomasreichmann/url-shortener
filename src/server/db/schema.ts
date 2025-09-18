@@ -12,16 +12,16 @@ import { index, pgTableCreator } from "drizzle-orm/pg-core";
  */
 export const createTable = pgTableCreator((name) => `url-shortener_${name}`);
 
-export const posts = createTable(
-  "post",
+export const urls = createTable(
+  "url",
   (d) => ({
-    id: d.integer().primaryKey().generatedByDefaultAsIdentity(),
-    name: d.varchar({ length: 256 }),
+    id: d.integer().primaryKey(),
+    originalUrl: d.text().notNull(),
     createdAt: d
       .timestamp({ withTimezone: true })
       .default(sql`CURRENT_TIMESTAMP`)
       .notNull(),
     updatedAt: d.timestamp({ withTimezone: true }).$onUpdate(() => new Date()),
   }),
-  (t) => [index("name_idx").on(t.name)],
+  (t) => [index("created_at_idx").on(t.createdAt)],
 );
